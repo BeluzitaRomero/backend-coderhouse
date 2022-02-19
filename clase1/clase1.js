@@ -1,13 +1,13 @@
 class User {
-  constructor(name, surname) {
+  constructor(name, lastName) {
     this.name = name;
-    this.surname = surname;
+    this.lastName = lastName;
     this.books = [];
     this.pets = [];
   }
 
   getFullName() {
-    return `${this.name} ${this.surname}`;
+    return `${this.name} ${this.lastName}`;
   }
 
   addPets(pet) {
