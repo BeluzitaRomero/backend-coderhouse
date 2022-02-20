@@ -1,14 +1,13 @@
 class UserTs {
   name: string;
   lastName: string;
+  books: { name: string; author: string }[] = [];
+  pets: string[] = [];
 
   constructor(name: string, lastName: string) {
     this.name = name;
     this.lastName = lastName;
   }
-
-  books: { name: string; author: string }[] = [];
-  pets: string[] = [];
 
   getNameTs(): string {
     return `${this.name} ${this.lastName}`;
