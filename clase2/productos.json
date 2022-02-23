@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Lapices",
+    "price": 2000,
+    "thumbnail": "https://images.pexels.com/photos/532231/pexels-photo-532231.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    "id": 1
+  },
+  {
+    "title": "Tizas",
+    "price": 150,
+    "thumbnail": "https://images.pexels.com/photos/226588/pexels-photo-226588.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    "id": 2
+  },
+  {
+    "title": "Crayones",
+    "price": 350,
+    "thumbnail": "https://images.pexels.com/photos/2078147/pexels-photo-2078147.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+    "id": 3
+  }
+]
