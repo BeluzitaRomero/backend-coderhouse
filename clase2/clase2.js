@@ -1,48 +1,52 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 
 class Container {
   constructor(file) {
     this.file = file;
   }
 
+  async getAll() {
+    /**Object[] - Devuelve un array con los objetos presentes en el archivo */
+    try {
+      const allProducts = await fs.readFile(this.file, "utf-8");
+      return JSON.parse(allProducts);
+    } catch (err) {
+      console.log("No hay productos");
+      return null;
+    }
+  }
+
   async save(product) {
     /*Number - Recibe un objeto, lo guarda en el archivo, devuelve el id asignado.*/
     const arrayProducts = await this.getAll();
-    let id = arrayProducts.map((p) => p.id);
-    let maxId = Math.max(...id);
-    const saveProduct = { ...product, id: maxId + 1 };
-    await arrayProducts.push(saveProduct);
 
-    try {
-      await fs.promises.writeFile(this.file, JSON.stringify(arrayProducts));
+    if (!arrayProducts) {
+      await fs.writeFile(this.file, "[]");
+    } else if (arrayProducts.length === 0) {
+      product = { ...product, id: 1 };
+      arrayProducts.push(product);
+      await fs.writeFile(this.file, JSON.stringify(arrayProducts));
+      console.log("se guardo el primer producto"); //despues los saco
+      return product.id;
+    } else {
+      let id = arrayProducts.map((p) => p.id);
+      let maxId = Math.max(...id) + 1;
+      const saveProduct = { ...product, id: maxId };
+      await arrayProducts.push(saveProduct);
+      await fs.writeFile(this.file, JSON.stringify(arrayProducts));
+      console.log("se guardo un producto mas"); //despues los saco
       return saveProduct.id;
-    } catch {
-      console.log("No se pudo guardar el producto");
     }
   }
 
   async getById(number) {
     /*Object - Recibe un id y devuelve el objeto con ese id, o null si no está.*/
-    try {
-      let showId = await this.getAll();
-      let objectSelected = showId.find((obj) => obj.id === number);
-      if (objectSelected) {
-        return objectSelected;
-      } else {
-        return null;
-      }
-    } catch (err) {
-      console.log("No se encuentra el producto");
-    }
-  }
 
-  async getAll() {
-    /**Object[] - Devuelve un array con los objetos presentes en el archivo */
-    try {
-      const allProducts = await fs.promises.readFile(this.file, "utf-8");
-      return JSON.parse(allProducts);
-    } catch (err) {
-      console.log("No hay productos");
+    let showId = await this.getAll();
+    let objectSelected = showId.find((obj) => obj.id === number);
+    if (objectSelected) {
+      return objectSelected;
+    } else {
       return null;
     }
   }
@@ -53,19 +57,14 @@ class Container {
     const arrayProducts = await this.getAll();
     const updateArray = arrayProducts.filter((obj) => obj.id !== id);
 
-    try {
-      await fs.promises.writeFile(this.file, JSON.stringify(updateArray));
-    } catch (err) {
-      console.log("Error al guardar");
-    }
+    await fs.writeFile(this.file, JSON.stringify(updateArray));
   }
 
   async deleteAll() {
     /**void - Elimina todos los objetos presentes en el archivo.
      */
-    const fs = require("fs");
     try {
-      await fs.promises.writeFile(this.file, "[]");
+      await fs.writeFile(this.file, "[]");
     } catch {
       console.log("No hay productos para borrar");
     }
@@ -73,27 +72,32 @@ class Container {
 }
 
 async function process() {
-  const newProduct = new Container("productos.json");
+  const container = new Container("productos.json");
 
-  const objeto = {
+  const object = {
     title: "Cuaderno N°3",
     price: 480,
     thumbnail:
       "https://images.pexels.com/photos/236111/pexels-photo-236111.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
   };
-  const objeto2 = {
+  const object2 = {
     title: "Microfibras x4",
     price: 800,
     thumbnail:
-      "una fhttps://images.pexels.com/photos/998591/pexels-photo-998591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260oto",
+      "https://images.pexels.com/photos/998591/pexels-photo-998591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260oto",
   };
-
-  console.log(await newProduct.save(objeto));
-  console.log(await newProduct.save(objeto2));
-  console.log(await newProduct.getById(2));
-  console.log(await newProduct.getById(10));
-  await newProduct.deleteById(4);
-  //   await newProduct.deleteAll();
+  const object3 = {
+    title: "Lapiceras",
+    price: 800,
+    thumbnail:
+      "https://images.pexels.com/photos/998591/pexels-photo-998591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260oto",
+  };
+  await container.deleteAll();
+  console.log(await container.save(object));
+  console.log(await container.save(object2));
+  console.log(await container.save(object3));
+  console.log(await container.getById(2));
+  await container.deleteById(1);
 }
 
 process();
