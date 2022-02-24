@@ -71,7 +71,7 @@ class Container {
   }
 }
 
-(() => {
+(async () => {
   const container = new Container("productos.json");
 
   const object = {
