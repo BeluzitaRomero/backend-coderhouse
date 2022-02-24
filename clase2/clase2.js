@@ -71,7 +71,7 @@ class Container {
   }
 }
 
-async function process() {
+(() => {
   const container = new Container("productos.json");
 
   const object = {
@@ -98,6 +98,4 @@ async function process() {
   console.log(await container.save(object3));
   console.log(await container.getById(2));
   await container.deleteById(1);
-}
-
-process();
+})();
